@@ -1,7 +1,7 @@
 # RFM98W Library
 William Eustace–Team Impulse
 
-_ This library is made available under the MIT licence; please see the repository root. _
+_This library is made available under the MIT licence; please see the repository root._
 
 ## Notes: please read
 The object of this library is to permit easy control of a Hope RF RFM98W radio module (which uses the rather
