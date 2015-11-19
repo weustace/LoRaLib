@@ -9,7 +9,7 @@ RFMLib::RFMLib(byte a, byte b, byte c, byte d){
     rfm_status =0;
 }
 
-void RFMLib::configure(byte config[5]){
+void RFMLib::configure(byte config[6]){
     pinMode(nss,OUTPUT);
     digitalWrite(nss,HIGH);
     
@@ -20,7 +20,7 @@ void RFMLib::configure(byte config[5]){
     
     pinMode(dio0,INPUT);
     if(dio5!=255)
-        pinMode(dio5,INPUT);
+    pinMode(dio5,INPUT);
     radioMode(0);
     wRFM(0x1D,config[0]);
     wRFM(0x1E,config[1]);//modem config registers
@@ -28,6 +28,7 @@ void RFMLib::configure(byte config[5]){
     //it seems to give a stronger RSSI.
     wRFM(0x07,config[3]);//freq to 434.7MHz - mid SB
     wRFM(0x08,config[4]);//freq -LSB
+	wRFM(0x26, config[5]);
 }
 
 void RFMLib::beginRX(){
@@ -48,12 +49,12 @@ void RFMLib::endRX(Packet& received){//function to be called on, or soon after, 
     byte len = rRFM(0x13);//length of packet
     received.len = len;
     byte packet[(int)len];
-    
+	
     if(bitRead(rRFM(0x12),5)){
         received.crc = false;
     }
     else{
-        received.crc = true;
+	    received.crc = true;
         wRFM(0x0D,0);
         brRFM(0x00,received.data,len);
     }
@@ -151,7 +152,7 @@ void RFMLib::brRFM(byte ad, byte vals[], byte len){//burst read - slower for sin
     SPI.transfer(ad & 0x7F);//wrn bit low
     for(int i = 0;i<len;i++){
         vals[i] = SPI.transfer(0);
-    }
-    
-    digitalWrite(nss,HIGH);
+    }  
+	
+   digitalWrite(nss,HIGH);
 }

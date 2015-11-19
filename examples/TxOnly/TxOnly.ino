@@ -6,7 +6,7 @@ RFMLib radio =RFMLib(20,7,16,21);
 void setup(){
   SPI.begin();
   Serial.begin(38400);
-  byte my_config[5] = {0x44,0x84,0x88,0xAC,0xCD};
+  byte my_config[6] = {0x44,0x84,0x88,0xAC,0xCD, 0x08};
   radio.configure(my_config);
 }
 

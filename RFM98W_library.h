@@ -20,7 +20,7 @@ public:
         int rssi;
         bool crc;//true for success, false for failure. Can read values if true.
     } Packet;
-    void configure(byte config[5]);
+    void configure(byte config[6]);
     void beginTX(Packet tx);
     void endTX();
     void beginRX();
