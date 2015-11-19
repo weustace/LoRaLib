@@ -5,10 +5,10 @@ _This library is made available under the MIT licence; please see the repository
 
 ## Notes: please read
 The object of this library is to permit easy control of a Hope RF RFM98W radio module (which uses the rather
-impressive LoRa modulation to extend range beyond what would normally be plausible in this frequency band.) from an Arduino, or similar microcontroller (it has been used extensively by Team Impulse on the Teensy 3.1).
+impressive LoRa modulation to extend range beyond what would normally be plausible in this frequency band and at this power level) from an Arduino, or similar microcontroller (it has been used extensively by Team Impulse on the Teensy 3.1).
 
 These modules are 434MHz; although it has not been tested, I see no reason why this code should not work for
-any Semtech SX1276 based system, since the interface (over SPI) is broadly standard. Some variables might need tweaking.
+any Semtech SX1276 based system, since the interface (over SPI) is broadly standard. Some areas might need tweaking.
 
 Bandwidths down to 7.8kHz are achievable, but not with the RFM98W, since this has an ordinary crystal oscillator rather than
 the required Temperature-Compensated Crystal Oscillator (TCXO). If the crystal is towards the edge of the specified frequency,
