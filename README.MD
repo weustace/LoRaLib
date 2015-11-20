@@ -15,7 +15,7 @@ the required Temperature-Compensated Crystal Oscillator (TCXO). If the crystal i
 the centre frequency is too far off to be received with a smaller bandwidth. In other words, lower
 bandwidth operations are infeasible (20.8kHz works on some modules but not others, and below this has not
 been successfully tested) without a more accurate crystal or a TCXO. This has caused me a lot of grief
-during the development of the library, until it was determined to be the issue!
+during the development of the library, until it was determined to be the issue! If you require 31.25kHz or 20.8kHz bandwidths on the RFM98W, David Shah suggests you set the final config register (```RegModemConfig3```) to 0x08; he has helpfully added this functionality to the library.
 
 This system has been successfully tested for High Altitude Balloon (HAB) flight, with range significantly exceeding 100km laterally. Line of sight is the limit, rather than distance; the high link budget suggests that if you can 'see' the balloon, it would be surprising in the extreme if you could not receive packets from it. It has also been successfully tested on a high-power rocket launch (European CanSat competition) to 3200 feet (1000m).
 
