@@ -12,12 +12,12 @@ RFMLib::RFMLib(byte a, byte b, byte c, byte d){
 void RFMLib::configure(byte config[6]){
     pinMode(nss,OUTPUT);
     digitalWrite(nss,HIGH);
-    
+
     if(rfm_rst!=255){
         pinMode(rfm_rst,OUTPUT);
         digitalWrite(rfm_rst,HIGH);
     }
-    
+
     pinMode(dio0,INPUT);
     if(dio5!=255)
     pinMode(dio5,INPUT);
@@ -26,11 +26,26 @@ void RFMLib::configure(byte config[6]){
     wRFM(0x1E,config[1]);//modem config registers
     wRFM(0x09,config[2]);//use PA_BOOST - even at the same power setting
     //it seems to give a stronger RSSI.
-    wRFM(0x07,config[3]);//freq to 434.7MHz - mid SB
-    wRFM(0x08,config[4]);//freq -LSB
+
+    //Use setFrequency for frequency adjustment
+
+    //wRFM(0x07,config[3]);//freq to 434.7MHz - mid SB
+    //wRFM(0x08,config[4]);//freq -LSB
 	wRFM(0x26, config[5]);
 }
 
+void RFMLib::setFrequency(uint32_t frequency) {
+    uint32_t freqVal = ((uint64_t)(frequency) << 19ULL) / Fosc;
+
+    wRFM(0x06, (freqVal >> 16) & 0xFF);
+    wRFM(0x07, (freqVal >> 8) & 0xFF);
+    wRFM(0x08, (freqVal) & 0xFF);
+
+}
+
+uint8_t RFMLib::getVersion() {
+    return rRFM(0x42);
+}
 void RFMLib::beginRX(){
     rfm_status = 2;
     rfm_done = false;
@@ -49,7 +64,7 @@ void RFMLib::endRX(Packet& received){//function to be called on, or soon after, 
     byte len = rRFM(0x13);//length of packet
     received.len = len;
     byte packet[(int)len];
-	
+
     if(bitRead(rRFM(0x12),5)){
         received.crc = false;
     }
@@ -102,22 +117,22 @@ void RFMLib::beginTX(Packet transmit_pkt){
 void RFMLib::radioMode(byte m){//set specified mode
     switch(m){
         case 0://sleep
-            wRFM(0x01,0x80);
+            wRFM(0x01,0x80 | (high_frequency << 3));
             break;
         case 1://stby
-            wRFM(0x01,0x81);
+            wRFM(0x01,0x81 | (high_frequency << 3));
             break;
         case 2://rx cont
-            wRFM(0x01,0x85);
+            wRFM(0x01,0x85 | (high_frequency << 3));
             break;
         case 3://rx single
-            wRFM(0x01,0x86);
+            wRFM(0x01,0x86 | (high_frequency << 3));
             break;
         case 4://tx
-            wRFM(0x01,0x83);
+            wRFM(0x01,0x83 | (high_frequency << 3));
             break;
     }
-    
+
 }
 
 //Low-level IO functions beyond this point. ============================================
@@ -135,7 +150,7 @@ void RFMLib::bwRFM(byte ad, byte vals[], int n){//burst write - less efficient b
     SPI.transfer(ad | 128);//set wrn bit - WRITE = 1
     for(int i = 0;i<n;i++)
         SPI.transfer(vals[i]);
-    
+
     digitalWrite(nss,HIGH);
 }
 
@@ -152,7 +167,7 @@ void RFMLib::brRFM(byte ad, byte vals[], byte len){//burst read - slower for sin
     SPI.transfer(ad & 0x7F);//wrn bit low
     for(int i = 0;i<len;i++){
         vals[i] = SPI.transfer(0);
-    }  
-	
+    }
+
    digitalWrite(nss,HIGH);
 }
