@@ -1,5 +1,6 @@
 # RFM98W Library
-William Eustace–Team Impulse
+William Eustace—Team Impulse
+Low data rate optimiser, 868MHz support and automatic frequency byte calculation courtesy of David Shah.
 
 _This library is made available under the MIT licence; please see the repository root._
 
